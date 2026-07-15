@@ -1,0 +1,22 @@
+h1{
+    color: rgb(209, 146, 146);
+    background-color: #586a6a;
+     margin: 50px;
+     align-items: center;
+     border-radius: 10px;
+     padding: 5px;
+}
+form{
+    background-color: rgb(239, 183, 183);
+    border:5px solid grey;
+    padding: 200px;
+    border-radius:80px;
+}
+button{
+    font-size: larger;
+}
+
+
+
+
+
