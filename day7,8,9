@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <style>
+        body{
+            background: #f5f7fb;
+        }
+
+        .card{
+            border:none;
+            border-radius:15px;
+            box-shadow:0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .card-header{
+            background:#0d6efd;
+            color:white;
+            border-radius:15px 15px 0 0 !important;
+        }
+
+        .form-control{
+            border-radius:10px;
+        }
+
+        .btn-primary{
+            border-radius:10px;
+            padding:10px;
+            font-weight:600;
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-6 col-md-8">
+
+            <div class="card">
+
+                <div class="card-header text-center py-3">
+                    <h3><i class="bi bi-person-plus-fill"></i> Student Registration</h3>
+                </div>
+
+                <div class="card-body p-4">
+
+                    <form action="registration.php" method="POST" enctype="multipart/form-data">
+
+                        <!-- Upload -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="bi bi-image"></i> Upload Image
+                            </label>
+                            <input type="file" class="form-control" name="myfile" required>
+                        </div>
+
+                        <!-- Name -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="bi bi-person-fill"></i> Full Name
+                            </label>
+                            <input type="text" class="form-control" name="name" placeholder="Enter your name" required>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="bi bi-envelope-fill"></i> Email
+                            </label>
+                            <input type="email" class="form-control" name="email" placeholder="example@gmail.com" required>
+                        </div>
+
+                        <!-- Branch -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="bi bi-book-fill"></i> Branch
+                            </label>
+
+                            <select class="form-select" name="branch" required>
+                                <option value="">Choose Branch</option>
+                                <option>CSE</option>
+                                <option>IT</option>
+                                <option>ECE</option>
+                                <option>EEE</option>
+                                <option>Mechanical</option>
+                                <option>Civil</option>
+                            </select>
+
+                        </div>
+
+                        <!-- CGPA -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="bi bi-award-fill"></i> CGPA
+                            </label>
+                            <input type="number"
+                                   class="form-control"
+                                   name="cgpa"
+                                   step="0.01"
+                                   min="0"
+                                   max="10"
+                                   placeholder="Enter CGPA"
+                                   required>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <i class="bi bi-telephone-fill"></i> Phone Number
+                            </label>
+                            <input type="tel"
+                                   class="form-control"
+                                   name="phone_no"
+                                   placeholder="9876543210"
+                                   maxlength="10"
+                                   required>
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle-fill"></i>
+                                Register Student
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
+
+
+
+
+<?php 
+
+include('db_connect.php');
+
+$folder = "uploads/";
+
+if (!is_dir($folder)) {
+    mkdir($folder, 0777, true);
+}
+
+if (isset($_FILES["myfile"])) {
+
+    $allowedTypes = ["jpg", "jpeg", "png", "webp"];
+
+    $extension = strtolower(pathinfo($_FILES["myfile"]["name"], PATHINFO_EXTENSION));
+
+    $maxsize = 20 * 1024 * 1024;
+
+    if (!in_array($extension, $allowedTypes)) {
+        die("Only JPG, JPEG, PNG and WEBP files are allowed.");
+    }
+
+    if ($_FILES["myfile"]["size"] > $maxsize) {
+        die("Maximum allowed file size is 20 MB.");
+    }
+
+    if ($_FILES["myfile"]["error"] != 0) {
+        die("Error while uploading the file.");
+    }
+
+    $filename = time(). "_". rand(1,100) . "." . $extension;
+
+    $destination = $folder . $filename;
+
+    if (move_uploaded_file($_FILES["myfile"]["tmp_name"], $destination)) {
+        echo "File uploaded successfully!<br>";
+        echo "Saved as: " . $filename; echo "<br>";
+    
+    } else {
+        echo "Failed to upload file.<br>";
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+$name = mysqli_real_escape_string($conn, $_POST['name']);
+$email = mysqli_real_escape_string($conn, $_POST['email']);
+$branch = mysqli_real_escape_string($conn, $_POST['branch']);
+$cgpa = $_POST['cgpa'];
+$phone_no = $_POST['phone_no'];
+
+$sql = "INSERT INTO user (photo, name, email, branch, cgpa, phone_no)
+VALUES ('$filename','$name','$email', '$branch', '$cgpa','$phone_no')";
+
+if (mysqli_query($conn, $sql)) {
+echo "Student Registered Successfully! <br>";
+} else {
+echo "Error: " . mysqli_error($conn);
+}
+}
+
+?>
+
+
+
+
+<?php
+$host = "localhost";
+$user = "root";
+$password = "priya@2007";
+$database = "skit";
+$conn = mysqli_connect($host, $user, $password,
+$database);
+
+if (!$conn) {
+die("Connection Failed:".
+mysqli_connect_error());
+}
+
+echo "Connection Successful! <br>";
+
+?>
+
+
+
+
+
+
+
+
+      
