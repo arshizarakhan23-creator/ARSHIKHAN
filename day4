@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        img {
+            position: absolute;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="startPage">
+        <h1>Fruit click game</h1>
+        <button onclick="startGame()">Start Game</button>
+    </div>
+    <div id="gamePage" style="display:none;">
+        <h1>let's start!!</h1>
+        <p>time left: <span id="timeLeft">20</span></p>
+        <p>apple: <span id="apple">0</span></p>
+        <p>banana: <span id="banana">0</span></p>
+        <img id="fruits" onclick="fruitClicked()" width="100">
+         <button id="restartBtn" onclick="restartGame()" style="display:none;">
+                🔄 Restart Game
+            </button>
+    </div>
+    <script src="clickGame.js">
+        
+
+    </script>
+
+
+</body>
+
+</html>
